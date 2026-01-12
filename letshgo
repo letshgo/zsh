@@ -4,7 +4,6 @@ SUBMODULES=$(git config --file .gitmodules --get-regexp '^submodule\..*\.path$' 
 for SUBMODULE in $SUBMODULES; do
   if [ ! -d "$SUBMODULE"/.git ]; then
     git submodule init
-  else
     git submodule update --remote --recursive
   fi
 done
