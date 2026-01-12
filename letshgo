@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+echo "export ZDOTDIR=$HOME/.config/zsh" >$HOME/.zshenv
+git submodule init
+git submodule update --remote --recursive
+if [[ -z ${1:-} ]]; then
+  read -p $'Install zsh dependencies? [y(es)/n(o)]\n' ZSHDEP_CONFIRMATION
+  echo
+else
+  export ZSHDEP_CONFIRMATION=$1
+fi
+if [[ $ZSHDEP_CONFIRMATION == "yes" ]] || [[ $ZSHDEP_CONFIRMATION == "y" ]]; then
+  bash $HOME/.config/zsh/scripts/zshdep
+elif [[ $ZSHDEP_CONFIRMATION == "no" ]] || [[ $ZSHDEP_CONFIRMATION == "n" ]]; then
+  echo "###############"
+  echo "# AWESOME 666 #"
+  echo "###############"
+else
+  echo "Well you're special, aren't you?"
+fi
