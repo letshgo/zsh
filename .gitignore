@@ -1,0 +1,5 @@
+.zcompdump*
+.histfile
+.zsh_plugins.zsh
+letshgo.init
+auth/*

@@ -1,0 +1,2 @@
+#!/usr/bin/env bash
+pass show ssh/sshk_ed25519 | head -n1 | script -q -c "ssh-add ~/.ssh/prv/sshk_ed25519" /dev/null

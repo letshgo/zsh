@@ -1,0 +1,49 @@
+#!/usr/bin/env bash
+# COMMON
+ZSHDEP_COMMON=
+  bat \
+  eza \
+  rustup \
+  cargo \
+  fd-find \
+  jq \
+  kubectl \
+  most \
+  neomutt \
+  neovim \
+  nodejs \
+  npm \
+  pass \
+  python3 \
+  python3-pip \
+  skopeo \
+  tmux \
+  trivy \
+  vim \
+  yq \
+  zsh \
+)
+#FEDORA
+ZSHDEP_FEDORA=(
+  zoxide \
+  k9s \
+)
+# DEBIAN
+ZSHDEP_DEBIAN=(
+  bat \
+)
+ZSHDEP_ARCH=(
+  base-devel \
+  k9s \
+  tofu \
+  zoxide \
+)
+# INSTALL
+if cat /etc/os-release | grep debian; then
+  sudo apt install -y $ZSHDEP_COMMON
+  sudo apt install -y $ZSHDEP_DEBIAN
+fi
+if cat /etc/os-release | grep fedora; then
+  sudo dnf install -y $ZSHDEP_COMMON
+  sudo dnf install -y $ZSHDEP_FEDORA
+fi
