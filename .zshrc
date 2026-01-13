@@ -40,6 +40,8 @@ alias v=$EDITOR
 alias irc=weechat
 alias ls="ls --color=auto"
 alias sumo='sudo machinectl shell root@'
+alias bw="BITWARDENCLI_APPDATA_DIR=~/.config/bw-krypta /usr/local/bin/bw $@"
+alias bwl="BW_CLIENTID=$(pass bw-krypta/clientid) BW_CLIENTSECRET=$(pass bw-krypta/clientsecret) BITWARDENCLI_APPDATA_DIR=~/.config/bw-krypta /usr/local/bin/bw $@ login --apikey"
 alias bl='bao login -method=userpass username=$VAULT_USER password=$VAULT_PASSWD'
 alias vl='vault login -method=userpass username=$VAULT_USER password=$VAULT_PASSWD'
 ## EZA
@@ -70,12 +72,12 @@ if command -v bat &>/dev/null; then
 fi
 # OS
 ## COMMON
-if cat /etc/os-release | grep Arch &>/dev/null; then
+if grep Arch /etc/os-release &>/dev/null; then
   alias pkg_add='yay -Slq | fzf --multi --preview 'yay -Si {1}' | xargs -ro yay -S'
   alias pkg_del='yay -Qq | fzf --multi --preview 'yay -Qi {1}' | xargs -ro yay -Rns'
 fi
 ## DEBIAN
-if cat /etc/os-release | grep debian &>/dev/null; then
+if grep debian /etc/os-release &>/dev/null; then
   alias bat=batcat
   alias fd=fdfind
   if command -v fdfind &>/dev/null; then

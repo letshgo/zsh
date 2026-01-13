@@ -6,6 +6,7 @@ ZSHDEP_COMMON=
   rustup \
   cargo \
   fd-find \
+  golang \
   jq \
   kubectl \
   most \
@@ -21,7 +22,7 @@ ZSHDEP_COMMON=
   trivy \
   vim \
   yq \
-  zsh \
+  zsh
 )
 #FEDORA
 ZSHDEP_FEDORA=(
@@ -39,11 +40,11 @@ ZSHDEP_ARCH=(
   zoxide \
 )
 # INSTALL
-if cat /etc/os-release | grep debian; then
+if grep debian /etc/os-release; then
   sudo apt install -y $ZSHDEP_COMMON
   sudo apt install -y $ZSHDEP_DEBIAN
 fi
-if cat /etc/os-release | grep fedora; then
+if grep fedora /etc/os-release; then
   sudo dnf install -y $ZSHDEP_COMMON
   sudo dnf install -y $ZSHDEP_FEDORA
 fi
