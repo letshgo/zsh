@@ -4,6 +4,7 @@ set -euo pipefail
 declare -A app_cred=(
   [az]="tenant"
   [bw]="addr clientid clientsecret master"
+  [ssh]="passwd"
   [vault]="addr user passwd"
 )
 # FUNCTIONS
@@ -58,11 +59,32 @@ az_login() {
   cred_check "$1" "${2:-}"
   az login --tenant "$(cred_cmd $1 tenant "${2:-}")"
 }
+ssh_add() {
+  cred_check "$1" "${2:-}"
+  if [[ -z ${2:-} ]]; then
+    echo "$(cred_cmd $1 passwd)" | head -n1 | script -q -c "ssh-add $HOME/.ssh/key/sshk_ed25519" /dev/null
+  elif [[ -d $HOME/.ssh/"${2:-}" ]]; then
+    echo "$(cred_cmd $1 passwd "${2:-}")" | head -n1 | script -q -c "ssh-add $HOME/.ssh/key/"${2:-}"/sshk_ed25519" /dev/null
+  else
+    echo "ssh key missing from $HOME/.ssh/"${2:-}"/"
+  fi
+}
 # FLOW
-if [[ $1 == "az" ]]; then
-  az_login "$1" "${2:-}"
-elif [[ $1 == "bao" ]] || [[ $1 == "vault" ]]; then
-  vault_login "$1" "${2:-}"
-elif [[ $1 == "bw" ]]; then
-  bw_login "$1" "${2:-}"
-fi
+flow() {
+  case $1 in
+  az)
+    az_login "$1" "${2:-}"
+    ;;
+  bao | vault)
+    vault_login "$1" "${2:-}"
+    ;;
+  bw)
+    bw_login "$1" "${2:-}"
+    ;;
+  ssh)
+    ssh_add "$1" "${2:-}"
+    ;;
+  *) ;;
+  esac
+}
+flow "$1" "${2:-}"
