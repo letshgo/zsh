@@ -201,5 +201,4 @@ if [[ ! "$(grep "^$(whoami):" /etc/passwd | cut -d: -f7)" == "/bin/zsh" ]]; then
 fi
 if command -v figlet &>/dev/null && command -v lolcat &>/dev/null; then
   figlet -f small "AWESOME 666" | lolcat -b -r -i -g 98971a:d79921
-  echo "If you have a true color terminal, you should be seeing a nice gradient."
 fi
