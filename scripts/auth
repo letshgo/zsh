@@ -49,11 +49,13 @@ bw_login() {
     BW_CLIENTID="$(cred_cmd $1 clientid "${2:-}")" \
     BW_CLIENTSECRET="$(cred_cmd $1 clientsecret "${2:-}")" \
       bw login --apikey --raw
-    bw_master="$(cred_cmd $1 master "${2:-}")" bw unlock --raw --passwordenv bw_master | pass insert --echo bw/bw_session
+    bw_master="$(cred_cmd $1 master "${2:-}")" \
+    bw unlock --raw --passwordenv bw_master | pass insert --echo bw/bw_session
   fi
 }
 vault_login() {
-  export "${1^^}"_ADDR="$(cred_cmd $1 addr "${2:-}")" && $1 login -method=userpass username=$(cred_cmd $1 user "${2:-}") password="$(cred_cmd $1 passwd "${2:-}")"
+  export "${1^^}"_ADDR="$(cred_cmd $1 addr "${2:-}")" && \
+  $1 login -method=userpass username=$(cred_cmd $1 user "${2:-}") password="$(cred_cmd $1 passwd "${2:-}")"
 }
 az_login() {
   cred_check "$1" "${2:-}"
@@ -61,12 +63,19 @@ az_login() {
 }
 ssh_add() {
   cred_check "$1" "${2:-}"
-  if [[ -z ${2:-} ]]; then
-    echo "$(cred_cmd $1 passwd)" | head -n1 | script -q -c "ssh-add $HOME/.ssh/key/sshk_ed25519" /dev/null
-  elif [[ -d $HOME/.ssh/"${2:-}" ]]; then
-    echo "$(cred_cmd $1 passwd "${2:-}")" | head -n1 | script -q -c "ssh-add $HOME/.ssh/key/"${2:-}"/sshk_ed25519" /dev/null
+  if [[ -z ${3:-} ]]; then
+    key_type=ed25519
   else
-    echo "ssh key missing from $HOME/.ssh/"${2:-}"/"
+    key_type="${3:}"
+  fi
+  if [[ -z ${2:-} ]]; then
+    echo "$(cred_cmd $1 passwd)" | head -n1 \
+    | script -q -c "ssh-add $HOME/.ssh/key/sshk_"$key_type"" /dev/null
+  elif [[ -f $HOME/.ssh/"${2:-}/sshk_ed25519" ]]; then
+    echo "$(cred_cmd $1 passwd "${2:-}")" | head -n1 \
+    | script -q -c "ssh-add $HOME/.ssh/key/"${2:-}"/sshk_"$key_type"" /dev/null
+  else
+    echo "ssh key missing from $HOME/.ssh/"${2:-}""
   fi
 }
 # FLOW
@@ -82,9 +91,13 @@ flow() {
     bw_login "$1" "${2:-}"
     ;;
   ssh)
-    ssh_add "$1" "${2:-}"
+    ssh_add "$1" "${2:-}" "${3:-}"
     ;;
-  *) ;;
+  *)
+    echo 'ERROR: You need to provide value for $1'
+    echo 'Usage: auth app profile* (*optional)'
+    echo "possible values for app: "${!app_cred[@]}""
+    ;;
   esac
 }
-flow "$1" "${2:-}"
+flow "$1" "${2:-}" "${3:-}"

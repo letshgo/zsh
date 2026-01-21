@@ -1,0 +1,21 @@
+#!/usr/bin/env zsh
+BREW_PKGS=(
+  az
+  bat
+  cowsay
+  fd-find figlet fzf
+  k9s kubectl
+  lolcat
+  most
+  neomutt neovim nmap
+  pyenv
+  skopeo
+  tenv trivy
+  weechat
+  zoxide
+)
+if [[ ! ${1:-} == "update" ]]; then
+  brew install $BREW_PKGS[@]
+else
+  brew update && brew upgrade
+fi

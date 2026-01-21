@@ -3,38 +3,29 @@ set -euo pipefail
 # DEPENDENCIES
 ## COMMON
 ZSHDEP_COMMON=(
-  az autoconf automake
-  bat bc
-  ca-certificates calc cargo cmake cowsay curl
+  autoconf automake
+  bc
+  ca-certificates calc cargo cmake curl
   dnsutils
   expect
-  fd-find figlet fzf
   golang
-  jq
   kitty-terminfo
-  lsb-release lolcat
-  most
-  neomutt nmap nodejs npm
-  p7zip
-  perl python3 python3-neovim python3-pip
+  jq
+  lsb-release
+  nodejs npm
+  p7zip perl python3 python3-neovim python3-pip
   rustup
-  skopeo strace sudo-rs systemd-container
+  strace sudo-rs systemd-container
   tcpdump tmux
   util-linux
   vim
-  weechat wget whois wireshark-cli
+  wget whois
   yq
   zsh
 )
-ZSHDEP_COMMON_POST=(
-  kubectl
-  tofu trivy
-  zoxide
-)
 ## FEDORA
 ZSHDEP_FEDORA=(
-  k9s
-  neovim net-tools
+  net-tools
   util-linux-script
 )
 ## DEBIAN
@@ -47,32 +38,39 @@ ZSHDEP_DEBIAN=(
 ## ARCH
 ZSHDEP_ARCH=(
   base-devel
-  k9s
-  neovim
-  pyenv
-  tfenv
 )
 ## CARGO
 ZSHDEP_CARGO=(
-  du-dust
-  eza
   wr
 )
-# NPM
+## NPM
 ZSHDEP_NPM=(
   neovim
   n
   '@bitwarden/cli'
 )
-# INSTALL
-npm_install() {
+# HOMEBREW
+brew_install() {
+  if [[ -f /home/linuxbrew/.linuxbrew/bin/brew ]]; then
+    bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+  fi
+}
+yay_install() {
+  if command -v yay &>/dev/null; then
+    (git clone https://aur.archlinux.org/yay.git && cd yay && makepkg -si)
+  fi
+}
+# BUILD FUNCTIONS
+## NPM
+npm_pkg_install() {
   if [[ ! ${1:-} == "update" ]]; then
     sudo npm install -g ${ZSHDEP_NPM[@]}
   else
     sudo npm update ${ZSHDEP_NPM[@]}
   fi
 }
-cargo_install() {
+## CARGO
+cargo_pkg_install() {
   export CARGO_HOME=$HOME/.local/share/cargo
   if [[ ! ${1:-} == "update" ]]; then
     cargo install ${ZSHDEP_CARGO[@]}
@@ -80,99 +78,46 @@ cargo_install() {
     cargo install ${ZSHDEP_CARGO[@]} --force
   fi
 }
-neovim_install() {
-  if ! command -v nvim &>/dev/null || [[ $1 == "update" ]]; then
-    if uname -m == "x86_64"; then
-      export CPUARCH=x86_64
-    elif uname -m == "aarch64"; then
-      export CPUARCH=arm64
-    fi
-    curl -Lo /tmp/nvim https://github.com/neovim/neovim/releases/latest/download/nvim-linux-$CPUARCH.appimage
-    chmod u+x /tmp/nvim
-    sudo mv /tmp/nvim /usr/local/bin/nvim
-  fi
-}
-pyenv_install() {
-  if [[ ! ${1:-} == "update" ]]; then
-    if [ ! -d $HOME/.pyenv ]; then
-      curl -fsSL https://pyenv.run | bash
-    fi
-  else
-    $HOME/.pyenv/bin/pyenv update
-  fi
-}
-tfenv_install() {
-  if [[ ! ${1:-} == "update" ]]; then
-    if [[ ! -d $HOME/.config/tfenv ]]; then
-      git clone --depth=1 https://github.com/tfutils/tfenv.git $HOME/.config/tfenv
-    fi
-  else
-    (cd $HOME/.config/tfenv && g pull)
-  fi
-}
-debian_specific() {
-  # KUBERNETES
-  if ! command -v kubectl &>/dev/null; then
-    curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.35/deb/Release.key | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
-    sudo chmod 644 /etc/apt/keyrings/kubernetes-apt-keyring.gpg
-  fi
-  # TOFU
-  if ! command -v tofu &>/dev/null; then
-    curl -fsSL https://get.opentofu.org/opentofu.gpg | sudo tee /etc/apt/keyrings/opentofu.gpg >/dev/null
-    curl -fsSL https://packages.opentofu.org/opentofu/tofu/gpgkey | sudo gpg --no-tty --batch --dearmor -o /etc/apt/keyrings/opentofu-repo.gpg >/dev/null
-    sudo chmod a+r /etc/apt/keyrings/opentofu.gpg /etc/apt/keyrings/opentofu-repo.gpg
-    echo \
-      "deb [signed-by=/etc/apt/keyrings/opentofu.gpg,/etc/apt/keyrings/opentofu-repo.gpg] https://packages.opentofu.org/opentofu/tofu/any/ any main
-      deb-src [signed-by=/etc/apt/keyrings/opentofu.gpg,/etc/apt/keyrings/opentofu-repo.gpg] https://packages.opentofu.org/opentofu/tofu/any/ any main" |
-      sudo tee /etc/apt/sources.list.d/opentofu.list >/dev/null
-    sudo chmod a+r /etc/apt/sources.list.d/opentofu.list
-  fi
-  # TRIVY
-  if ! command -v trivy &>/dev/null; then
-    wget -qO - https://aquasecurity.github.io/trivy-repo/deb/public.key | gpg --dearmor | sudo tee /usr/share/keyrings/trivy.gpg >/dev/null
-    echo "deb [signed-by=/usr/share/keyrings/trivy.gpg] https://aquasecurity.github.io/trivy-repo/deb generic main" | sudo tee -a /etc/apt/sources.list.d/trivy.list
-  fi
-  # ZOXIDE
-  if ! command -v zoxide &>/dev/null; then
-    curl -sS https://debian.griffo.io/EA0F721D231FDD3A0A17B9AC7808B4DD62C41256.asc | sudo gpg --dearmor --yes -o /etc/apt/trusted.gpg.d/debian.griffo.io.gpg
-    echo "deb https://debian.griffo.io/apt $(lsb_release -sc 2>/dev/null) main" | sudo tee /etc/apt/sources.list.d/debian.griffo.io.list
-  fi
-  sudo apt update
+ext_deps() {
+  cargo_pkg_install ${1:-}
+  npm_pkg_install ${1:-}
+  brew_install ${1:-}
 }
 ## DEBIAN
-if grep debian /etc/os-release &>/dev/null; then
-  sudo apt install $ZSHDEP_COMMON
-  sudo apt install $ZSHDEP_DEBIAN
-  debian_specific
-  sudo apt install $ZSHDEP_COMMON_POST
-  cargo_install ${1:-}
-  npm_install ${1:-}
-  pyenv_install ${1:-}
-  neovim_install ${1:-}
-  tfenv_install ${1:-}
-fi
+debian_install() {
+  sudo apt install ${ZSHDEP_COMMON[@]}
+  sudo apt install ${ZSHDEP_DEBIAN[@]}
+  ext_deps ${1:-}
+}
 ## FEDORA
-if grep fedora /etc/os-release &>/dev/null; then
+fedora_install() {
   sudo dnf install ${ZSHDEP_COMMON[@]}
   sudo dnf install ${ZSHDEP_FEDORA[@]}
-  sudo dnf install ${ZSHDEP_COMMON_POST[@]}
-  cargo_install ${1:-}
-  npm_install ${1:-}
-  pyenv_install ${1:-}
-  tfenv_install ${1:-}
-fi
+  ext_deps ${1:-}
+}
 ## ARCH
-if grep archlinux /etc/os-release &>/dev/null; then
-  sudo pacman -Syy $ZSHDEP_COMMON
-  sudo pacman -Syy $ZSHDEP_ARCH
-  if command -v yay &>/dev/null; then
-    (git clone https://aur.archlinux.org/yay.git && cd yay && makepkg -si)
+arch_install() {
+  sudo pacman -Syy ${ZSHDEP_COMMON[@]}
+  sudo pacman -Syy ${ZSHDEP_ARCH[@]}
+  ext_deps ${1:-}
+  yay_install
+}
+flow() {
+  if grep archlinux /etc/os-release &>/dev/null; then
+    arch_install ${1:-}
+  elif grep debian /etc/os-release &>/dev/null; then
+    debian_install ${1:-}
+  elif grep fedora /etc/os-release &>/dev/null; then
+    fedora_install ${1:-}
+  else
+    echo "Unsupported OS"
   fi
-  npm_install ${1:-}
-fi
-if [[ ! "$(grep "^$(whoami):" /etc/passwd | cut -d: -f7)" == "/bin/zsh" ]]; then
-  sudo chsh -s /bin/zsh $(whoami)
-fi
-if command -v figlet &>/dev/null && command -v lolcat &>/dev/null; then
-  figlet -f small "AWESOME 666" | lolcat -b -r -i -g 98971a:d79921
+  if [[ ! "$(grep "^$(whoami):" /etc/passwd | cut -d: -f7)" == "/bin/zsh" ]]; then
+    sudo chsh -s /bin/zsh $(whoami)
+  fi
+}
+if [[ -z ${1:-} ]] || [[ ${1:-} == "update" ]]; then
+  flow ${1:-}
+else
+  echo 'Usage: zshdep update* (*optional)'
 fi

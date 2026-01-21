@@ -1,3 +1,9 @@
+## HOMEBREW
+if [[ -f /home/linuxbrew/.linuxbrew/bin/brew ]]; then
+  eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv zsh)"
+else
+  MISSING_PKGS+=(brew)
+fi
 ## RUST
 if command -v cargo &>/dev/null; then
   export CARGO_HOME=$HOME/.local/share/cargo
@@ -50,24 +56,11 @@ else
 fi
 
 # PYENV
-if [ -d $HOME/.pyenv ]; then
-  export PYENV_ROOT=$HOME/.pyenv
-  export PATH=$PATH:$PYENV_ROOT/bin
-  if command -v pyenv &>/dev/null; then
-    eval "$(pyenv init - zsh)"
-  fi
+if command -v pyenv &>/dev/null; then
+  eval "$(pyenv init - zsh)"
 else
   MISSING_PKGS+=(pyenv)
 fi
-
-# TFENV
-if [ -d $HOME/.config/tfenv ]; then
-  export TFENV_ROOT=$HOME/.config/tfenv
-  export PATH=$PATH:$TFENV_ROOT/bin
-else
-  MISSING_PKGS+=(tfenv)
-fi
-
 
 # FZF
 export FZF_DEFAULT_OPTS="--layout=reverse --inline-info"
