@@ -3,7 +3,7 @@ set -euo pipefail
 # DEPENDENCIES
 ## COMMON
 ZSHDEP_COMMON=(
-  autoconf automake
+  autoconf automake awk
   bc
   ca-certificates calc cargo cmake curl
   dnsutils
@@ -51,7 +51,7 @@ ZSHDEP_NPM=(
 )
 # HOMEBREW
 brew_install() {
-  if [[ -f /home/linuxbrew/.linuxbrew/bin/brew ]]; then
+  if [[ ! -f /home/linuxbrew/.linuxbrew/bin/brew ]]; then
     bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
   fi
 }
