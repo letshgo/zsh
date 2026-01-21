@@ -1,13 +1,15 @@
 #!/usr/bin/env zsh
 BREW_PKGS=(
+  aerc
   az
-  bat
+  bat btop
   cowsay
+  eza
   fd figlet fzf
   k9s kubectl
   lolcat
   most
-  neomutt neovim nmap
+  neomutt neovim newsboat nmap
   pyenv
   skopeo
   tenv trivy

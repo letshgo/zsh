@@ -9,6 +9,7 @@ ZSHDEP_COMMON=(
   dnsutils
   expect
   golang
+  htop
   kitty-terminfo
   jq
   lsb-release
