@@ -52,7 +52,7 @@ ZSHDEP_NPM=(
 # HOMEBREW
 brew_install() {
   if [[ ! -f /home/linuxbrew/.linuxbrew/bin/brew ]]; then
-    bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+    CI=1 bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
   fi
 }
 yay_install() {
