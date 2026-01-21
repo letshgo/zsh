@@ -3,7 +3,7 @@ BREW_PKGS=(
   az
   bat
   cowsay
-  fd-find figlet fzf
+  fd figlet fzf
   k9s kubectl
   lolcat
   most
