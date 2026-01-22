@@ -19,7 +19,7 @@ alias g=git
 alias ..="cd .."
 alias v=$EDITOR
 alias irc=weechat
-alias news=newsmoat
+alias news=newsboat
 alias mail=neomutt
 alias ls="ls --color=auto"
 alias sumo='sudo machinectl shell root@'

@@ -7,10 +7,10 @@ BREW_PKGS=(
   eza
   fd figlet fzf
   k9s kubectl
-  lolcat
+  lazygit lolcat
   most
   neomutt neovim newsboat nmap
-  pyenv
+  pyenv pyenv-virtualenv python-tk
   skopeo
   tenv trivy
   weechat

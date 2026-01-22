@@ -1,19 +1,33 @@
+## RUST
+if command -v rustup-init &>/dev/null; then
+  export CARGO_HOME=$HOME/.local/share/cargo
+  export RUSTUP_HOME=$HOME/.local/share/rustup
+  export PATH=$PATH:$CARGO_HOME/bin:$HOME/.local/share/rustup/bin
+else
+  MISSING_PKGS+=(rustup)
+fi
+if ! command -v cargo &>/dev/null; then
+  MISSING_PKGS+=(cargo)
+fi
+
 ## HOMEBREW
 if [[ -f /home/linuxbrew/.linuxbrew/bin/brew ]]; then
   eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv zsh)"
 else
   MISSING_PKGS+=(brew)
 fi
-## RUST
-if command -v cargo &>/dev/null; then
-  export CARGO_HOME=$HOME/.local/share/cargo
-  export RUSTUP_HOME=$HOME/.local/share/rustup
-  export PATH=$PATH:$CARGO_HOME/bin
-elif command -v rustc &>/dev/null; then
-  MISSING_PKGS+=(cargo)
-else
-  MISSING_PKGS+=(cargo)
-  MISSING_PKGS+=(rustup)
+
+## PYENV
+if command -v pyenv &>/dev/null; then
+  export PYENV_ROOT=$HOME/.local/share/pyenv
+  eval "$(pyenv init - zsh)"
+  eval "$(pyenv virtualenv-init -)"
+fi
+
+## TASKWARRIOR
+if command -v task &>/dev/null; then
+  export TASKDATA=$HOME/.config/task
+  export TASKRC=$TASKDATA/taskrc
 fi
 
 ## (NEO)VIM
@@ -69,32 +83,18 @@ if command -v fzf &>/dev/null; then
 else
   MISSING_PKGS+=(fzf)
 fi
-if command -v fd &>/dev/null && ! grep debian /etc/os-release &>/dev/null; then
+if command -v fd &>/dev/null; then
   export FZF_DEFAULT_COMMAND='fd --type f'
 else
   unset FZF_DEFAULT_COMMAND
   MISSING_PKGS+=(fdfind)
 fi
-if command -v bat &>/dev/null && ! grep debian /etc/os-release &>/dev/null; then
+if command -v bat &>/dev/null; then
   export FZF_CTRL_T_OPTS="--preview 'bat -n --color=always {}'"
 else
   unset FZF_CTRL_T_OPTS
   MISSING_PKGS+=(batcat)
 fi
-## DEBIAN
-if grep debian /etc/os-release &>/dev/null; then
-  alias bat=batcat
-  alias fd=fdfind
-  if command -v fdfind &>/dev/null; then
-    export FZF_DEFAULT_COMMAND='fdfind --type f'
-  else
-    unset FZF_DEFAULT_COMMAND
-    MISSING_PKGS+=(fdfind)
-  fi
-  if command -v batcat &>/dev/null; then
-    export FZF_CTRL_T_OPTS="--preview 'batcat -n --color=always {}'"
-  else
-    unset FZF_CTRL_T_OPTS
-    MISSING_PKGS+=(batcat)
-  fi
-fi
+## THEME
+ZSH_HIGHLIGHT_STYLES[comment]='fg=magenta,cursive'
+ZSH_HIGHLIGHT_STYLES[path]='fg=magenta'

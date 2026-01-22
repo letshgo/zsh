@@ -8,19 +8,19 @@ ZSHDEP_COMMON=(
   ca-certificates calc cargo cmake curl
   dnsutils
   expect
-  golang
+  golang git-crypt
   htop
   kitty-terminfo
   jq
   lsb-release
   nodejs npm
-  p7zip perl python3 python3-neovim python3-pip
+  patch p7zip perl python3 python3-neovim python3-pip
   rustup
   strace sudo-rs systemd-container
-  tcpdump tmux
+  tcpdump tk-devel tmux
   util-linux
   vim
-  wget whois
+  wget whois wireshark-cli
   yq
   zsh
 )
