@@ -30,9 +30,9 @@ cred_path() {
 }
 cred_cmd() {
   if [[ -z ${3:-} ]]; then
-    pass "$(cred_path $1 $2)"
+    pass "$(cred_path "$1" "$2")"
   else
-    pass "$(cred_path $1 $2 "${3:-}")"
+    pass "$(cred_path "$1" "$2" "${3:-}")"
   fi
 }
 # LOGINS
@@ -40,26 +40,26 @@ bw_login() {
   BITWARDENCLI_APPDATA_DIR=$HOME/.config/bw
   cred_check "$1" "${2:-}"
   if [[ ! -d $BITWARDENCLI_APPDATA_DIR ]]; then
-    bw config server "$(cred_cmd $1 addr "${2:-}")"
-  elif bw login --check &>/dev/null && ! grep "$(cred_cmd $1 addr "${2:-}")" $BITWARDENCLI_APPDATA_DIR/data.json &>/dev/null; then
+    bw config server "$(cred_cmd "$1" addr "${2:-}")"
+  elif bw login --check &>/dev/null && ! grep "$(cred_cmd "$1" addr "${2:-}")" "$BITWARDENCLI_APPDATA_DIR"/data.json &>/dev/null; then
     bw logout
-    bw config server "$(cred_cmd $1 addr "${2:-}")"
+    bw config server "$(cred_cmd "$1" addr "${2:-}")"
   fi
   if ! bw login --check; then
-    BW_CLIENTID="$(cred_cmd $1 clientid "${2:-}")" \
-    BW_CLIENTSECRET="$(cred_cmd $1 clientsecret "${2:-}")" \
+    BW_CLIENTID="$(cred_cmd "$1" clientid "${2:-}")" \
+    BW_CLIENTSECRET="$(cred_cmd "$1" clientsecret "${2:-}")" \
       bw login --apikey --raw
-    bw_master="$(cred_cmd $1 master "${2:-}")" \
+    bw_master="$(cred_cmd "$1" master "${2:-}")" \
     bw unlock --raw --passwordenv bw_master | pass insert --echo bw/bw_session
   fi
 }
 vault_login() {
-  export "${1^^}"_ADDR="$(cred_cmd $1 addr "${2:-}")" && \
-  $1 login -method=userpass username=$(cred_cmd $1 user "${2:-}") password="$(cred_cmd $1 passwd "${2:-}")"
+  export "${1^^}"_ADDR="$(cred_cmd "$1" addr "${2:-}")" && \
+  "$1" login -method=userpass username="$(cred_cmd "$1" user "${2:-}") password="$(cred_cmd "$1" passwd "${2:-}")""
 }
 az_login() {
   cred_check "$1" "${2:-}"
-  az login --tenant "$(cred_cmd $1 tenant "${2:-}")"
+  az login --tenant "$(cred_cmd "$1" tenant "${2:-}")"
 }
 ssh_add() {
   cred_check "$1" "${2:-}"
@@ -68,11 +68,11 @@ ssh_add() {
   else
     key_type="${3:}"
   fi
-  if [[ -z ${2:-} ]]; then
-    echo "$(cred_cmd $1 passwd)" | head -n1 \
+  if [[ -z "${2:-}" ]]; then
+    "$(cred_cmd "$1" passwd)" | head -n1 \
     | script -q -c "ssh-add $HOME/.ssh/key/sshk_"$key_type"" /dev/null
   elif [[ -f $HOME/.ssh/"${2:-}/sshk_ed25519" ]]; then
-    echo "$(cred_cmd $1 passwd "${2:-}")" | head -n1 \
+    "$(cred_cmd "$1" passwd "${2:-}")" | head -n1 \
     | script -q -c "ssh-add $HOME/.ssh/key/"${2:-}"/sshk_"$key_type"" /dev/null
   else
     echo "ssh key missing from $HOME/.ssh/"${2:-}""

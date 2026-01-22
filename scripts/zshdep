@@ -17,7 +17,7 @@ ZSHDEP_COMMON=(
   patch p7zip perl python3 python3-neovim python3-pip
   rustup
   strace sudo-rs systemd-container
-  tcpdump tk-devel tmux
+  tcpdump
   util-linux
   vim
   wget whois wireshark-cli
@@ -65,60 +65,60 @@ yay_install() {
 ## NPM
 npm_pkg_install() {
   if [[ ! ${1:-} == "update" ]]; then
-    sudo npm install -g ${ZSHDEP_NPM[@]}
+    sudo npm install -g "${ZSHDEP_NPM[@]}"
   else
-    sudo npm update ${ZSHDEP_NPM[@]}
+    sudo npm update "${ZSHDEP_NPM[@]}"
   fi
 }
 ## CARGO
 cargo_pkg_install() {
   export CARGO_HOME=$HOME/.local/share/cargo
   if [[ ! ${1:-} == "update" ]]; then
-    cargo install ${ZSHDEP_CARGO[@]}
+    cargo install "${ZSHDEP_CARGO[@]}"
   else
-    cargo install ${ZSHDEP_CARGO[@]} --force
+    cargo install "${ZSHDEP_CARGO[@]}" --force
   fi
 }
 ext_deps() {
-  cargo_pkg_install ${1:-}
-  npm_pkg_install ${1:-}
-  brew_install ${1:-}
+  cargo_pkg_install "${1:-}"
+  npm_pkg_install "${1:-}"
+  brew_install "${1:-}"
 }
 ## DEBIAN
 debian_install() {
-  sudo apt install ${ZSHDEP_COMMON[@]}
-  sudo apt install ${ZSHDEP_DEBIAN[@]}
-  ext_deps ${1:-}
+  sudo apt install "${ZSHDEP_COMMON[@]}"
+  sudo apt install "${ZSHDEP_DEBIAN[@]}"
+  ext_deps "${1:-}"
 }
 ## FEDORA
 fedora_install() {
-  sudo dnf install ${ZSHDEP_COMMON[@]}
-  sudo dnf install ${ZSHDEP_FEDORA[@]}
-  ext_deps ${1:-}
+  sudo dnf install "${ZSHDEP_COMMON[@]}"
+  sudo dnf install "${ZSHDEP_FEDORA[@]}"
+  ext_deps "${1:-}"
 }
 ## ARCH
 arch_install() {
-  sudo pacman -Syy ${ZSHDEP_COMMON[@]}
-  sudo pacman -Syy ${ZSHDEP_ARCH[@]}
-  ext_deps ${1:-}
+  sudo pacman -Syy "${ZSHDEP_COMMON[@]}"
+  sudo pacman -Syy "${ZSHDEP_ARCH[@]}"
+  ext_deps "${1:-}"
   yay_install
 }
 flow() {
   if grep archlinux /etc/os-release &>/dev/null; then
-    arch_install ${1:-}
+    arch_install "${1:-}"
   elif grep debian /etc/os-release &>/dev/null; then
-    debian_install ${1:-}
+    debian_install "${1:-}"
   elif grep fedora /etc/os-release &>/dev/null; then
-    fedora_install ${1:-}
+    fedora_install "${1:-}"
   else
     echo "Unsupported OS"
   fi
   if [[ ! "$(grep "^$(whoami):" /etc/passwd | cut -d: -f7)" == "/bin/zsh" ]]; then
-    sudo chsh -s /bin/zsh $(whoami)
+    sudo chsh -s /bin/zsh "$(whoami)"
   fi
 }
 if [[ -z ${1:-} ]] || [[ ${1:-} == "update" ]]; then
-  flow ${1:-}
+  flow "${1:-}"
 else
   echo 'Usage: zshdep update* (*optional)'
 fi

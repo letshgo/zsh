@@ -12,7 +12,7 @@ BREW_PKGS=(
   neomutt neovim newsboat nmap
   pyenv pyenv-virtualenv python-tk
   skopeo
-  tenv trivy
+  tenv tmux tmuxp trivy
   weechat
   zoxide
 )
