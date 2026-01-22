@@ -71,13 +71,6 @@ else
   MISSING_PKGS+=(zoxide)
 fi
 
-# PYENV
-if command -v pyenv &>/dev/null; then
-  eval "$(pyenv init - zsh)"
-else
-  MISSING_PKGS+=(pyenv)
-fi
-
 # FZF
 export FZF_DEFAULT_OPTS="--layout=reverse --inline-info"
 if command -v fzf &>/dev/null; then
