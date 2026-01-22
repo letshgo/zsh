@@ -21,7 +21,7 @@ fi
 if command -v pyenv &>/dev/null; then
   export PYENV_ROOT=$HOME/.local/share/pyenv
   export PATH="/home/linuxbrew/.linuxbrew/opt/pyenv/bin:$PATH"
-  export PATH="$PYENV_ROOT/bin:$PATH"
+  export PATH="$PYENV_ROOT/shims:$PATH"
   eval "$(pyenv init - zsh)"
   eval "$(pyenv virtualenv-init -)"
 fi
