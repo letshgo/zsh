@@ -20,7 +20,9 @@ alias ..="cd .."
 alias v=$EDITOR
 alias irc=weechat
 alias news=newsboat
-alias mail=neomutt
+alias mail=aerc
+alias calendar=calcurse
+alias tasks=taskwarrior-tui
 alias ls="ls --color=auto"
 alias sumo='sudo machinectl shell root@'
 ## EZA

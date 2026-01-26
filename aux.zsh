@@ -22,6 +22,12 @@ if command -v pyenv &>/dev/null; then
   export PYENV_ROOT=$HOME/.local/share/pyenv
   export PATH="/home/linuxbrew/.linuxbrew/opt/pyenv/bin:$PATH"
   export PATH="$PYENV_ROOT/shims:$PATH"
+  export TK_PREFIX="$(brew --prefix tcl-tk)"
+  export CPPFLAGS="-I${TK_PREFIX}/include ${CPPFLAGS}"
+  export LDFLAGS="-L${TK_PREFIX}/lib ${LDFLAGS}"
+  export PKG_CONFIG_PATH="${TK_PREFIX}/lib/pkgconfig:${PKG_CONFIG_PATH}"
+  export OPENSSL_PREFIX="$(brew --prefix openssl@3)"
+  export PYTHON_CONFIGURE_OPTS="--with-openssl=${OPENSSL_PREFIX}"
   eval "$(pyenv init - zsh)"
   eval "$(pyenv virtualenv-init -)"
 fi
@@ -90,6 +96,10 @@ else
   unset FZF_CTRL_T_OPTS
   MISSING_PKGS+=(batcat)
 fi
+
+## WEGO
+export WEGORC=$HOME/.config/wego/wegorc
+
 ## THEME
 ZSH_HIGHLIGHT_STYLES[comment]='fg=magenta,cursive'
 ZSH_HIGHLIGHT_STYLES[path]='fg=magenta'
