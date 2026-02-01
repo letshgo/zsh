@@ -70,10 +70,10 @@ ssh_add() {
   fi
   if [[ -z "${2:-}" ]]; then
     echo "$(cred_cmd "$1" passwd)" | head -n1 |
-      script -q -c "ssh-add $HOME/.ssh/keys/sshk_$key_type /dev/null"
+      script -q -c "ssh-add $HOME/.ssh/keys/sshk_$key_type" /dev/null
   elif [[ -f $HOME/.ssh/"${2:-}/sshk_ed25519" ]]; then
     echo "$(cred_cmd "$1" passwd "${2:-}")" | head -n1 |
-      script -q -c "ssh-add $HOME/.ssh/keys/${2:-}/sshk_$key_type /dev/null"
+      script -q -c "ssh-add $HOME/.ssh/keys/${2:-}/sshk_$key_type" /dev/null
   else
     echo "ssh key missing from $HOME/.ssh/${2:-}"
   fi
