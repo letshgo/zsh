@@ -37,7 +37,7 @@ cred_cmd() {
 }
 # LOGINS
 bw_login() {
-  BITWARDENCLI_APPDATA_DIR=$HOME/.config/bw
+  BITWARDENCLI_APPDATA_DIR="$HOME"/.config/bw
   cred_check "$1" "${2:-}"
   if [[ ! -d $BITWARDENCLI_APPDATA_DIR ]]; then
     bw config server "$(cred_cmd "$1" addr "${2:-}")"
@@ -50,12 +50,12 @@ bw_login() {
     BW_CLIENTSECRET="$(cred_cmd "$1" clientsecret "${2:-}")" \
       bw login --apikey --raw
     bw_master="$(cred_cmd "$1" master "${2:-}")" \
-    bw unlock --raw --passwordenv bw_master | pass insert --echo bw/bw_session
+      bw unlock --raw --passwordenv bw_master | pass insert --echo bw/bw_session
   fi
 }
 vault_login() {
-  export "${1^^}"_ADDR="$(cred_cmd "$1" addr "${2:-}")" && \
-  "$1" login -method=userpass username="$(cred_cmd "$1" user "${2:-}") password="$(cred_cmd "$1" passwd "${2:-}")""
+  export "${1^^}"_ADDR="$(cred_cmd "$1" addr "${2:-}")" &&
+    "$1" login -method=userpass username="$(cred_cmd "$1" user "${2:-}")" password="$(cred_cmd "$1" passwd "${2:-}")"
 }
 az_login() {
   cred_check "$1" "${2:-}"
@@ -66,16 +66,16 @@ ssh_add() {
   if [[ -z ${3:-} ]]; then
     key_type=ed25519
   else
-    key_type="${3:}"
+    key_type="${3:-}"
   fi
   if [[ -z "${2:-}" ]]; then
-    echo "$(cred_cmd "$1" passwd)" | head -n1 \
-    | script -q -c "ssh-add $HOME/.ssh/keys/sshk_"$key_type"" /dev/null
+    echo "$(cred_cmd "$1" passwd)" | head -n1 |
+      script -q -c "ssh-add $HOME/.ssh/keys/sshk_$key_type /dev/null"
   elif [[ -f $HOME/.ssh/"${2:-}/sshk_ed25519" ]]; then
-    echo "$(cred_cmd "$1" passwd "${2:-}")" | head -n1 \
-    | script -q -c "ssh-add $HOME/.ssh/keys/"${2:-}"/sshk_"$key_type"" /dev/null
+    echo "$(cred_cmd "$1" passwd "${2:-}")" | head -n1 |
+      script -q -c "ssh-add $HOME/.ssh/keys/${2:-}/sshk_$key_type /dev/null"
   else
-    echo "ssh key missing from $HOME/.ssh/"${2:-}""
+    echo "ssh key missing from $HOME/.ssh/${2:-}"
   fi
 }
 # FLOW
