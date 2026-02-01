@@ -24,9 +24,13 @@ alias mail=aerc
 alias calendar=calcurse
 alias tasks=taskwarrior-tui
 alias ls="ls --color=auto"
-alias sumo='sudo machinectl shell root@'
+if type machinectl &>/dev/null; then
+  alias sumo='sudo machinectl shell root@'
+else
+  MISSING_PKGS+=(systemd-container)
+fi
 ## EZA
-if command -v eza &>/dev/null; then
+if type eza &>/dev/null; then
   alias l='eza -lhgbF --git --group-directories-first --icons=always'
   alias ll='eza -lahbgF --git --group-directories-first --icons=always'
   alias llm='eza -lbGd --git --sort=modified --group-directories-first'
@@ -39,10 +43,10 @@ else
   MISSING_PKGS+=(eza)
 fi
 ## OS
-if grep Arch /etc/os-release &>/dev/null && command -v yay &>/dev/null; then
+if grep Arch /etc/os-release &>/dev/null && type yay &>/dev/null; then
   alias pkg_add='yay -Slq | fzf --multi --preview 'yay -Si {1}' | xargs -ro yay -S'
   alias pkg_del='yay -Qq | fzf --multi --preview 'yay -Qi {1}' | xargs -ro yay -Rns'
-elif grep Arch /etc/os-release &>/dev/null && ! command -v yay &>/dev/null; then
+elif grep Arch /etc/os-release &>/dev/null && ! type yay &>/dev/null; then
   alias pkg_add='sudo pacman -Slq | fzf --multi --preview 'pacman -Si {1}' | xargs -ro sudo pacman -S'
   alias pkg_del='sudo pacman -Qq | fzf --multi --preview 'pacman -Qi {1}' | xargs -ro sudo pacman -Rns'
   MISSING_PKGS+=(yay)

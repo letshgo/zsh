@@ -1,12 +1,12 @@
 ## RUST
-if command -v rustup-init &>/dev/null; then
+if type rustup-init &>/dev/null; then
   export CARGO_HOME=$HOME/.local/share/cargo
   export RUSTUP_HOME=$HOME/.local/share/rustup
   export PATH=$PATH:$CARGO_HOME/bin:$HOME/.local/share/rustup/bin
 else
   MISSING_PKGS+=(rustup)
 fi
-if ! command -v cargo &>/dev/null; then
+if ! type cargo &>/dev/null; then
   MISSING_PKGS+=(cargo)
 fi
 
@@ -18,7 +18,7 @@ else
 fi
 
 ## PYENV
-if command -v pyenv &>/dev/null; then
+if type pyenv &>/dev/null; then
   export PYENV_ROOT=$HOME/.local/share/pyenv
   export PATH="/home/linuxbrew/.linuxbrew/opt/pyenv/bin:$PATH"
   export PATH="$PYENV_ROOT/shims:$PATH"
@@ -27,18 +27,18 @@ if command -v pyenv &>/dev/null; then
 fi
 
 ## TASKWARRIOR
-if command -v task &>/dev/null; then
+if type task &>/dev/null; then
   export TASKDATA=$HOME/.config/task
   export TASKRC=$TASKDATA/taskrc
 fi
 
 ## (NEO)VIM
-if command -v nvim &>/dev/null; then
+if type nvim &>/dev/null; then
   export EDITOR=nvim
   export VISUAL=$EDITOR
   export MOST_EDITOR=nvim
   export MANPAGER="nvim +Man!"
-elif command -v vim &>/dev/null; then
+elif type vim &>/dev/null; then
   export EDITOR=vim
   export VISUAL=$EDITOR
   export MOST_EDITOR=vim
@@ -51,21 +51,21 @@ else
 fi
 
 ## BITWARDEN
-if command -v bw &>/dev/null; then
+if type bw &>/dev/null; then
   export BITWARDENCLI_APPDATA_DIR=$HOME/.config/bw
 else
   MISSING_PKGS+=(bw)
 fi
 
 ## MOST
-if command -v most &>/dev/null; then
+if type most &>/dev/null; then
   export PAGER=most
 else
   MISSING_PKGS+=(most)
 fi
 
 # ZOXIDE
-if command -v zoxide &>/dev/null; then
+if type zoxide &>/dev/null; then
   eval "$(zoxide init zsh)"
 else
   MISSING_PKGS+=(zoxide)
@@ -73,18 +73,18 @@ fi
 
 # FZF
 export FZF_DEFAULT_OPTS="--layout=reverse --inline-info"
-if command -v fzf &>/dev/null; then
+if type fzf &>/dev/null; then
   source <(fzf --zsh)
 else
   MISSING_PKGS+=(fzf)
 fi
-if command -v fd &>/dev/null; then
+if type fd &>/dev/null; then
   export FZF_DEFAULT_COMMAND='fd --type f'
 else
   unset FZF_DEFAULT_COMMAND
   MISSING_PKGS+=(fdfind)
 fi
-if command -v bat &>/dev/null; then
+if type bat &>/dev/null; then
   export FZF_CTRL_T_OPTS="--preview 'bat -n --color=always {}'"
 else
   unset FZF_CTRL_T_OPTS
