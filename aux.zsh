@@ -6,24 +6,23 @@ if type rustup-init &>/dev/null; then
 else
   MISSING_PKGS+=(rustup)
 fi
-if ! type cargo &>/dev/null; then
-  MISSING_PKGS+=(cargo)
-fi
+[ ! type cargo &>/dev/null ] && MISSING_PKGS+=(cargo)
 
 ## HOMEBREW
 if [[ -f /home/linuxbrew/.linuxbrew/bin/brew ]]; then
-  eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv zsh)"
-else
-  MISSING_PKGS+=(brew)
+  [[ -n "$HOMEBREW_PREFIX" ]] && eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv zsh)" || MISSING_PKGS+=(brew)
 fi
+
+## VOLTA
+export VOLTA_HOME=$HOME/.config/volta
+export PATH=$VOLTA_HOME/bin:$PATH
 
 ## PYENV
 if type pyenv &>/dev/null; then
   export PYENV_ROOT=$HOME/.local/share/pyenv
   export PATH="/home/linuxbrew/.linuxbrew/opt/pyenv/bin:$PATH"
   export PATH="$PYENV_ROOT/shims:$PATH"
-  eval "$(pyenv init - zsh)"
-  eval "$(pyenv virtualenv-init -)"
+  [[ ! -n "$(typeset +f | grep -E '^pyenv$')" ]] && eval "$(pyenv init - zsh)" && eval "$(pyenv virtualenv-init -)"
 fi
 
 ## TASKWARRIOR
@@ -74,7 +73,7 @@ fi
 # FZF
 export FZF_DEFAULT_OPTS="--layout=reverse --inline-info"
 if type fzf &>/dev/null; then
-  source <(fzf --zsh)
+  [[ ! -n "$(typeset +f | grep -E '^_fzf_')" ]] && eval "$(fzf --zsh)"
 else
   MISSING_PKGS+=(fzf)
 fi
@@ -92,7 +91,18 @@ else
 fi
 
 ## WEGO
-export WEGORC=$HOME/.config/wego/wegorc
+if type wego &>/dev/null; then
+  export WEGORC=$HOME/.config/wego/wegorc
+else
+  MISSING_PKGS+=(batcat)
+fi
 
 ## THEME
+export AGKOZAK_MULTILINE=0
+export AGKOZAK_LEFT_PROMPT_ONLY=1
+export AGKOZAK_PROMPT_CHAR=( ❯ ❯ ❮ )
+export AGKOZAK_COLORS_PROMPT_CHAR='green'
+export AGKOZAK_USER_HOST_DISPLAY=0
+export AGKOZAK_CUSTOM_SYMBOLS=( '⇣⇡' '⇣' '⇡' '+' 'x' '!' '>' '?' 'S')
+export AGKOZAK_BRANCH_STATUS_SEPARATOR=''
 ZSH_HIGHLIGHT_STYLES[comment]='fg=magenta,cursive'

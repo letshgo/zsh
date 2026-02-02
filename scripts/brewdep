@@ -6,15 +6,18 @@ BREW_PKGS=(
   cowsay
   eza
   fd figlet fzf
+  git-crypt golang
+  jq
   k9s kubectl
   lazygit lolcat
   most
   neomutt neovim newsboat nmap
-  pyenv pyenv-virtualenv python-tk
+  pyenv pyenv-virtualenv
   skopeo
   tenv tmux tmuxp trivy
-  weechat
-  zoxide
+  volta weechat wego
+  yq
+  zig zoxide
 )
 if [[ ! ${1:-} == "update" ]]; then
   brew install $BREW_PKGS[@]

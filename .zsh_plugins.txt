@@ -14,7 +14,6 @@ ohmyzsh/ohmyzsh path:plugins/rsync
 ohmyzsh/ohmyzsh path:plugins/zsh-navigation-tools
 zsh-users/zsh-autosuggestions
 zsh-users/zsh-completions
-zsh-users/zsh-syntax-highlighting
 MichaelAquilina/zsh-you-should-use
-ael-code/zsh-colored-man-pages
-romkatv/powerlevel10k
+agkozak/agkozak-zsh-prompt
+zsh-users/zsh-syntax-highlighting

@@ -1,13 +1,24 @@
 #!/usr/bin/env zsh
+#zmodload zsh/zprof
 # ANTIDOTE
+zstyle ':omz:update' mode disabled
 source $ZDOTDIR/.antidote/antidote.zsh
-antidote load
+zsh_plugins=${ZDOTDIR:-~}/.zsh_plugins
+[[ -f ${zsh_plugins}.txt ]] || touch ${zsh_plugins}.txt
+fpath=($ZDOTDIR/.antidote/functions $fpath)
+autoload -Uz antidote
+if [[ ! ${zsh_plugins}.zsh -nt ${zsh_plugins}.txt ]]; then
+  antidote bundle <${zsh_plugins}.txt >|${zsh_plugins}.zsh
+fi
+source ${zsh_plugins}.zsh
 zstyle ':antidote:compatibility-mode' 'antibody' 'on'
 
 # EXPORT
 export HISTFILE=$ZDOTDIR/.histfile
 export HISTSIZE=10000
 export SAVEHIST=10000
+setopt HIST_IGNORE_ALL_DUPS
+setopt HIST_FIND_NO_DUPS
 export PATH=$PATH:$ZDOTDIR/scripts:$HOME/.local/bin
 export MISSING_PKGS=()
 
@@ -57,8 +68,4 @@ if [ ! ${#MISSING_PKGS[@]} -eq 0 ]; then
   echo "Install the following applications:"
   printf '%s\n' "${MISSING_PKGS[@]}"
 fi
-## P10K
-if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
-  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
-fi
-[[ ! -f ~/.config/zsh/.p10k.zsh ]] || source ~/.config/zsh/.p10k.zsh
+#zprof
