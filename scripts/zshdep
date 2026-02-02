@@ -3,7 +3,7 @@ set -euo pipefail
 # DEPENDENCIES
 ## COMMON
 ZSHDEP_COMMON=(
-  autoconf automake awk
+  autoconf automake gawk
   bc
   ca-certificates calc cmake curl
   dnsutils
@@ -16,7 +16,7 @@ ZSHDEP_COMMON=(
   tcpdump
   util-linux
   vim
-  wget whois wireshark-cli
+  wget whois
   zsh
 )
 ## FEDORA
