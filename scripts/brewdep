@@ -13,6 +13,7 @@ BREW_PKGS=(
   most
   neomutt neovim newsboat nmap
   pyenv pyenv-virtualenv
+  rustup
   skopeo
   tenv tmux tmuxp trivy
   volta weechat wego
