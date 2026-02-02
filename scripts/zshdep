@@ -29,7 +29,6 @@ ZSHDEP_DEBIAN=(
   apt-transport-https
   bsdutils build-essential
   ncal
-  software-properties-common
 )
 ## ARCH
 ZSHDEP_ARCH=(
