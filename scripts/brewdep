@@ -11,7 +11,7 @@ BREW_PKGS=(
   k9s kubectl
   lazygit lolcat
   most
-  neomutt neovim newsboat nmap
+  neovim newsboat nmap
   pyenv pyenv-virtualenv
   rustup
   skopeo
