@@ -2,7 +2,7 @@
 BREW_PKGS=(
   aerc
   az
-  bat btop
+  bat bitwarden-cli btop
   cowsay
   eza
   fd figlet fzf

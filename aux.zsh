@@ -1,3 +1,8 @@
+## HOMEBREW
+if [[ -f /home/linuxbrew/.linuxbrew/bin/brew ]]; then
+  eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv zsh)" || MISSING_PKGS+=(brew)
+fi
+
 ## RUST
 if type rustup-init &>/dev/null; then
   export CARGO_HOME=$HOME/.local/share/cargo
@@ -7,11 +12,6 @@ else
   MISSING_PKGS+=(rustup)
 fi
 [ ! type cargo &>/dev/null ] && MISSING_PKGS+=(cargo)
-
-## HOMEBREW
-if [[ -f /home/linuxbrew/.linuxbrew/bin/brew ]]; then
-  [[ -n "$HOMEBREW_PREFIX" ]] && eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv zsh)" || MISSING_PKGS+=(brew)
-fi
 
 ## VOLTA
 export VOLTA_HOME=$HOME/.config/volta
@@ -95,6 +95,20 @@ if type wego &>/dev/null; then
   export WEGORC=$HOME/.config/wego/wegorc
 else
   MISSING_PKGS+=(batcat)
+fi
+
+## EZA
+if type eza &>/dev/null; then
+  alias l='eza -lhgbF --git --group-directories-first --icons=always'
+  alias ll='eza -lahbgF --git --group-directories-first --icons=always'
+  alias llm='eza -lbGd --git --sort=modified --group-directories-first'
+  alias la='eza -lbhHigmuSa --time-style=long-iso --git --color-scale --group-directories-first'
+  alias lx='eza -lbhHigmuSa@ --time-style=long-iso --git --color-scale --group-directories-first'
+  alias lt='eza --tree --level=2 --group-directories-first'
+else
+  alias l='ls -lhg'
+  alias ll='ls -lahg'
+  MISSING_PKGS+=(eza)
 fi
 
 ## THEME

@@ -40,19 +40,6 @@ if type machinectl &>/dev/null; then
 else
   MISSING_PKGS+=(systemd-container)
 fi
-## EZA
-if type eza &>/dev/null; then
-  alias l='eza -lhgbF --git --group-directories-first --icons=always'
-  alias ll='eza -lahbgF --git --group-directories-first --icons=always'
-  alias llm='eza -lbGd --git --sort=modified --group-directories-first'
-  alias la='eza -lbhHigmuSa --time-style=long-iso --git --color-scale --group-directories-first'
-  alias lx='eza -lbhHigmuSa@ --time-style=long-iso --git --color-scale --group-directories-first'
-  alias lt='eza --tree --level=2 --group-directories-first'
-else
-  alias l='ls -lhg'
-  alias ll='ls -lahg'
-  MISSING_PKGS+=(eza)
-fi
 ## OS
 if grep Arch /etc/os-release &>/dev/null && type yay &>/dev/null; then
   alias pkg_add='yay -Slq | fzf --multi --preview 'yay -Si {1}' | xargs -ro yay -S'
@@ -67,5 +54,6 @@ fi
 if [ ! ${#MISSING_PKGS[@]} -eq 0 ]; then
   echo "Install the following applications:"
   printf '%s\n' "${MISSING_PKGS[@]}"
+  unset MISSING_PKGS
 fi
 #zprof

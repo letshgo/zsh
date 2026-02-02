@@ -35,16 +35,6 @@ ZSHDEP_DEBIAN=(
 ZSHDEP_ARCH=(
   base-devel
 )
-## CARGO
-ZSHDEP_CARGO=(
-  wr
-)
-## NPM
-ZSHDEP_NPM=(
-  neovim
-  n
-  '@bitwarden/cli'
-)
 # HOMEBREW
 brew_install() {
   if [[ ! -f /home/linuxbrew/.linuxbrew/bin/brew ]]; then
@@ -57,45 +47,23 @@ yay_install() {
   fi
 }
 # BUILD FUNCTIONS
-## NPM
-npm_pkg_install() {
-  if [[ ! ${1:-} == "update" ]]; then
-    sudo npm install -g "${ZSHDEP_NPM[@]}"
-  else
-    sudo npm update "${ZSHDEP_NPM[@]}"
-  fi
-}
-## CARGO
-cargo_pkg_install() {
-  export CARGO_HOME=$HOME/.local/share/cargo
-  if [[ ! ${1:-} == "update" ]]; then
-    cargo install "${ZSHDEP_CARGO[@]}"
-  else
-    cargo install "${ZSHDEP_CARGO[@]}" --force
-  fi
-}
-ext_deps() {
-  cargo_pkg_install "${1:-}"
-  npm_pkg_install "${1:-}"
-  brew_install "${1:-}"
-}
 ## DEBIAN
 debian_install() {
   sudo apt install "${ZSHDEP_COMMON[@]}"
   sudo apt install "${ZSHDEP_DEBIAN[@]}"
-  ext_deps "${1:-}"
+  brew_install "${1:-}"
 }
 ## FEDORA
 fedora_install() {
   sudo dnf install "${ZSHDEP_COMMON[@]}"
   sudo dnf install "${ZSHDEP_FEDORA[@]}"
-  ext_deps "${1:-}"
+  brew_install "${1:-}"
 }
 ## ARCH
 arch_install() {
   sudo pacman -Syy "${ZSHDEP_COMMON[@]}"
   sudo pacman -Syy "${ZSHDEP_ARCH[@]}"
-  ext_deps "${1:-}"
+  brew_install "${1:-}"
   yay_install
 }
 flow() {
