@@ -104,7 +104,6 @@ rmvirtualenv() {
 }
 
 # ALIAS
-## EZA
 alias l='eza -lhgbF --git --group-directories-first --icons=always'
 alias ll='eza -lahbgF --git --group-directories-first --icons=always'
 alias llm='eza -lbGd --git --sort=modified --group-directories-first'
