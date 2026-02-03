@@ -1,26 +1,23 @@
-## BREW
+# BREW
 eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv zsh)"
 
-# If not in tmux, start tmux.
-#if [[ -z ${TMUX+X}${ZSH_SCRIPT+X}${ZSH_EXECUTION_STRING+X} ]]; then
-#  exec tmux
-#fi
-
-export ZPLUGINDIR=$HOME/.local/share/zsh_plugins
-
+export ZPLUGINDIR="$HOME/.local/share/zsh_plugins"
+mkdir -p "$ZPLUGINDIR"
+# PLUGINS
 function zcompile-many() {
   local f
   for f; do zcompile -R -- "$f".zwc "$f"; done
 }
-
-# Clone and compile to wordcode missing plugins.
 if [[ ! -e $ZPLUGINDIR/ohmyzsh ]]; then
   git clone --depth=1 https://github.com/ohmyzsh/ohmyzsh.git $ZPLUGINDIR/ohmyzsh
-  zcompile-many $ZPLUGINDIR/ohmyzsh/plugins/{gpg-agent/gpg-agent.plugin.zsh,ssh-agent/ssh-agent.plugin.zsh,zsh-interactive-cd/zsh-interactive-cd.plugin.zsh}
+  zcompile-many $ZPLUGINDIR/ohmyzsh/plugins/gpg-agent/gpg-agent.plugin.zsh
+  zcompile-many $ZPLUGINDIR/ohmyzsh/plugins/ssh-agent/ssh-agent.plugin.zsh
+  zcompile-many $ZPLUGINDIR/ohmyzsh/plugins/zsh-interactive-cd/zsh-interactive-cd.plugin.zsh
+  zcompile-many $ZPLUGINDIR/ohmyzsh/lib/completion.zsh
 fi
 if [[ ! -e $ZPLUGINDIR/zsh-completions ]]; then
   git clone --depth=1 https://github.com/zsh-users/zsh-completions.git $ZPLUGINDIR/zsh-completions
-  zcompile-many $ZPLUGINDIR/zsh-completions/{zsh-completions.plugin.zsh,src/*}
+  zcompile-many $ZPLUGINDIR/zsh-completions/{zsh-completions.plugin.zsh}
 fi
 if [[ ! -e $ZPLUGINDIR/zsh-syntax-highlighting ]]; then
   git clone --depth=1 https://github.com/zsh-users/zsh-syntax-highlighting.git $ZPLUGINDIR/zsh-syntax-highlighting
@@ -34,7 +31,6 @@ if [[ ! -e $ZPLUGINDIR/powerlevel10k ]]; then
   git clone --depth=1 https://github.com/romkatv/powerlevel10k.git $ZPLUGINDIR/powerlevel10k
   make -C $ZPLUGINDIR/powerlevel10k pkg
 fi
-
 # Activate Powerlevel10k Instant Prompt.
 if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
@@ -42,19 +38,21 @@ fi
 
 ZSH_AUTOSUGGEST_MANUAL_REBIND=1
 
+# Enable the "new" completion system (compsys).
+autoload -Uz compinit && compinit
+[[ $ZDOTDIR/.zcompdump.zwc -nt $ZDOTDIR/.zcompdump ]] || zcompile-many $ZDOTDIR/.zcompdump
+
 # Load plugins.
 source $ZPLUGINDIR/ohmyzsh/plugins/gpg-agent/gpg-agent.plugin.zsh
 source $ZPLUGINDIR/ohmyzsh/plugins/ssh-agent/ssh-agent.plugin.zsh
 source $ZPLUGINDIR/ohmyzsh/plugins/zsh-interactive-cd/zsh-interactive-cd.plugin.zsh
+source $ZPLUGINDIR/ohmyzsh/lib/completion.zsh
 source $ZPLUGINDIR/zsh-completions/zsh-completions.plugin.zsh
 source $ZPLUGINDIR/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 source $ZPLUGINDIR/zsh-autosuggestions/zsh-autosuggestions.zsh
 source $ZPLUGINDIR/powerlevel10k/powerlevel10k.zsh-theme
 source $ZDOTDIR/.p10k.zsh
 
-# Enable the "new" completion system (compsys).
-autoload -Uz compinit && compinit
-[[ $ZDOTDIR/.zcompdump.zwc -nt $ZDOTDIR/.zcompdump ]] || zcompile-many $ZDOTDIR/.zcompdump
 unfunction zcompile-many
 
 # EXPORT
@@ -81,7 +79,7 @@ export BITWARDENCLI_APPDATA_DIR=$HOME/.config/bw
 export PATH=$PATH:$ZDOTDIR/scripts:$HOME/.local/bin:$CARGO_HOME/bin:$HOME/.local/share/rustup/bin:$VOLTA_HOME/bin:$PYENV_ROOT/shims:/home/linuxbrew/.linuxbrew/opt/pyenv/bin
 
 # EVAL
-eval "$(fzf --zsh)"
+source <(fzf --zsh)
 eval "$(pyenv init - --no-rehash zsh)"
 __vew_init() {
 	pyenv virtualenvwrapper
