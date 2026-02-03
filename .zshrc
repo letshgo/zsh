@@ -58,35 +58,26 @@ autoload -Uz compinit && compinit
 unfunction zcompile-many
 
 # EXPORT
-## HISTORY
 export HISTFILE=$ZDOTDIR/.histfile
 export HISTSIZE=10000
 export SAVEHIST=10000
 setopt HIST_IGNORE_ALL_DUPS
 setopt HIST_FIND_NO_DUPS
-## EDITOR
 export EDITOR=nvim
 export VISUAL=$EDITOR
 export MOST_EDITOR=nvim
 export MANPAGER="nvim +Man!"
 export PAGER=most
-## FZF
 export FZF_DEFAULT_OPTS="--layout=reverse --inline-info"
 export FZF_DEFAULT_COMMAND='fd --type f'
 export FZF_CTRL_T_OPTS="--preview 'bat -n --color=always {}'"
-## RUST
 export CARGO_HOME=$HOME/.local/share/cargo
 export RUSTUP_HOME=$HOME/.local/share/rustup
-## TASK
 export TASKDATA=$HOME/.config/task
 export TASKRC=$TASKDATA/taskrc
-## VOLTA
 export VOLTA_HOME=$HOME/.config/volta
-## PYENV
 export PYENV_ROOT=$HOME/.local/share/pyenv
-## BW
 export BITWARDENCLI_APPDATA_DIR=$HOME/.config/bw
-## PATH
 export PATH=$PATH:$ZDOTDIR/scripts:$HOME/.local/bin:$CARGO_HOME/bin:$HOME/.local/share/rustup/bin:$VOLTA_HOME/bin:$PYENV_ROOT/shims:/home/linuxbrew/.linuxbrew/opt/pyenv/bin
 
 # EVAL
@@ -120,26 +111,23 @@ alias llm='eza -lbGd --git --sort=modified --group-directories-first'
 alias la='eza -lbhHigmuSa --time-style=long-iso --git --color-scale --group-directories-first'
 alias lx='eza -lbhHigmuSa@ --time-style=long-iso --git --color-scale --group-directories-first'
 alias lt='eza --tree --level=2 --group-directories-first'
-## KUBECTL
 alias k=kubectl
 alias ke='kubectl exec -t -i'
 alias kaf='kubectl apply -f'
 alias kak='kubectl apply -k'
 alias kc='kubectl config get-contexts'
-## PROD
 alias v=nvim
 alias g=git
+alias t=tmux
 alias irc=weechat
 alias news=newsboat
 alias mail=aerc
 alias calendar=calcurse
 alias tasks=taskwarrior-tui
-## MISC
 alias ls="ls --color=auto"
 alias sumo='sudo machinectl shell root@'
 alias ..="cd .."
 alias ...="cd ../.."
-## RSYNC
 alias rsync-copy="rsync -avz --progress -h"
 alias rsync-move="rsync -avz --progress -h --remove-source-files"
 alias rsync-update="rsync -avzu --progress -h"
