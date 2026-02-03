@@ -4,3 +4,4 @@
 .zsh_plugins.zsh
 letshgo.init
 auth/*
+.zcompcache/

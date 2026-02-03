@@ -3,25 +3,26 @@ eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv zsh)"
 
 export ZPLUGINDIR="$HOME/.local/share/zsh_plugins"
 mkdir -p "$ZPLUGINDIR"
+
 # PLUGINS
 function zcompile-many() {
   local f
   for f; do zcompile -R -- "$f".zwc "$f"; done
 }
 if [[ ! -e $ZPLUGINDIR/ohmyzsh ]]; then
-  git clone --depth=1 https://github.com/ohmyzsh/ohmyzsh.git $ZPLUGINDIR/ohmyzsh
-  zcompile-many $ZPLUGINDIR/ohmyzsh/plugins/gpg-agent/gpg-agent.plugin.zsh
-  zcompile-many $ZPLUGINDIR/ohmyzsh/plugins/ssh-agent/ssh-agent.plugin.zsh
-  zcompile-many $ZPLUGINDIR/ohmyzsh/plugins/zsh-interactive-cd/zsh-interactive-cd.plugin.zsh
-  zcompile-many $ZPLUGINDIR/ohmyzsh/lib/completion.zsh
+  git clone --depth=1 https://github.com/ohmyzsh/ohmyzsh.git "$ZPLUGINDIR"/ohmyzsh
+  zcompile-many "$ZPLUGINDIR"/ohmyzsh/plugins/gpg-agent/gpg-agent.plugin.zsh
+  zcompile-many "$ZPLUGINDIR"/ohmyzsh/plugins/ssh-agent/ssh-agent.plugin.zsh
+  zcompile-many "$ZPLUGINDIR"/ohmyzsh/plugins/zsh-interactive-cd/zsh-interactive-cd.plugin.zsh
+  zcompile-many "$ZPLUGINDIR"/ohmyzsh/lib/completion.zsh
 fi
 if [[ ! -e $ZPLUGINDIR/zsh-completions ]]; then
-  git clone --depth=1 https://github.com/zsh-users/zsh-completions.git $ZPLUGINDIR/zsh-completions
-  zcompile-many $ZPLUGINDIR/zsh-completions/{zsh-completions.plugin.zsh}
+  git clone --depth=1 https://github.com/zsh-users/zsh-completions.git "$ZPLUGINDIR"/zsh-completions
+  zcompile-many "$ZPLUGINDIR"/zsh-completions/{zsh-completions.plugin.zsh}
 fi
 if [[ ! -e $ZPLUGINDIR/zsh-syntax-highlighting ]]; then
-  git clone --depth=1 https://github.com/zsh-users/zsh-syntax-highlighting.git $ZPLUGINDIR/zsh-syntax-highlighting
-  zcompile-many $ZPLUGINDIR/zsh-syntax-highlighting/{zsh-syntax-highlighting.zsh,highlighters/*/*.zsh}
+  git clone --depth=1 https://github.com/zsh-users/zsh-syntax-highlighting.git "$ZPLUGINDIR"/zsh-syntax-highlighting
+  zcompile-many "$ZPLUGINDIR"/zsh-syntax-highlighting/{zsh-syntax-highlighting.zsh,highlighters/*/*.zsh}
 fi
 if [[ ! -e $ZPLUGINDIR/zsh-autosuggestions ]]; then
   git clone --depth=1 https://github.com/zsh-users/zsh-autosuggestions.git $ZPLUGINDIR/zsh-autosuggestions
@@ -31,14 +32,14 @@ if [[ ! -e $ZPLUGINDIR/powerlevel10k ]]; then
   git clone --depth=1 https://github.com/romkatv/powerlevel10k.git $ZPLUGINDIR/powerlevel10k
   make -C $ZPLUGINDIR/powerlevel10k pkg
 fi
-# Activate Powerlevel10k Instant Prompt.
+
+ZSH_AUTOSUGGEST_MANUAL_REBIND=1
+
+# POWERLEVEL10K
 if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
-ZSH_AUTOSUGGEST_MANUAL_REBIND=1
-
-# Enable the "new" completion system (compsys).
 autoload -Uz compinit && compinit
 [[ $ZDOTDIR/.zcompdump.zwc -nt $ZDOTDIR/.zcompdump ]] || zcompile-many $ZDOTDIR/.zcompdump
 
@@ -102,16 +103,15 @@ rmvirtualenv() {
 }
 
 # ALIAS
-alias l='eza -lhgbF --git --group-directories-first --icons=always'
+alias l='eza -lhgbF --git --time-style=iso --group-directories-first --icons=always'
 alias ll='eza -lahbgF --git --group-directories-first --icons=always'
-alias llm='eza -lbGd --git --sort=modified --group-directories-first'
-alias la='eza -lbhHigmuSa --time-style=long-iso --git --color-scale --group-directories-first'
-alias lx='eza -lbhHigmuSa@ --time-style=long-iso --git --color-scale --group-directories-first'
-alias lt='eza --tree --level=2 --group-directories-first'
+alias lt='eza --tree --level=2 --git --color-scale --group-directories-first'
+alias la='eza -lbhHigmuSaZ --time-style=long-iso --git --color-scale --group-directories-first  --icons=always'
+alias lta='eza -a --tree --level=2 --git --color-scale --group-directories-first'
 alias k=kubectl
 alias ke='kubectl exec -t -i'
 alias kaf='kubectl apply -f'
-alias kak='kubectl apply -k'
+alias kc='kubectl get namespaces'
 alias kc='kubectl config get-contexts'
 alias v=nvim
 alias g=git
@@ -125,6 +125,7 @@ alias ls="ls --color=auto"
 alias sumo='sudo machinectl shell root@'
 alias ..="cd .."
 alias ...="cd ../.."
+alias md="mkdir -p"
 alias rsync-copy="rsync -avz --progress -h"
 alias rsync-move="rsync -avz --progress -h --remove-source-files"
 alias rsync-update="rsync -avzu --progress -h"

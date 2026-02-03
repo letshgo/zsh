@@ -4,6 +4,7 @@ BREW_PKGS=(
   az
   bat bitwarden-cli btop
   cowsay
+  dotnet
   eza
   fd figlet fzf
   git-crypt golang
