@@ -2,7 +2,7 @@
 set -euo pipefail
 # ARRAYS
 declare -A app_cred=(
-  [az]="tenant"
+  [az]="scope tenant"
   [bw]="addr clientid clientsecret master"
   [ssh]="passwd"
   [vault]="addr user passwd"
@@ -51,7 +51,7 @@ vault_login() {
 }
 az_login() {
   cred_check "$1" "${2:-}"
-  az login --tenant "$(cred_cmd "$1" tenant "${2:-}")"
+  az login --tenant "$(cred_cmd "$1" tenant "${2:-}")" --scope "$(cred_cmd "$1" scope "${2:-}")"
 }
 ssh_add() {
   cred_check "$1" "${2:-}"

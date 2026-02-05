@@ -111,7 +111,7 @@ alias lta='eza -a --tree --level=2 --git --color-scale --group-directories-first
 alias k=kubectl
 alias ke='kubectl exec -t -i'
 alias kaf='kubectl apply -f'
-alias kc='kubectl get namespaces'
+alias kn='kubectl get namespaces'
 alias kc='kubectl config get-contexts'
 alias v=nvim
 alias g=git
