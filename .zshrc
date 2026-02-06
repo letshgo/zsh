@@ -15,6 +15,8 @@ if [[ ! -e $ZPLUGINDIR/ohmyzsh ]]; then
   zcompile-many "$ZPLUGINDIR"/ohmyzsh/plugins/ssh-agent/ssh-agent.plugin.zsh
   zcompile-many "$ZPLUGINDIR"/ohmyzsh/plugins/zsh-interactive-cd/zsh-interactive-cd.plugin.zsh
   zcompile-many "$ZPLUGINDIR"/ohmyzsh/lib/completion.zsh
+  zcompile-many "$ZPLUGINDIR"/ohmyzsh/lib/functions.zsh
+  zcompile-many "$ZPLUGINDIR"/ohmyzsh/lib/termsupport.zsh
 fi
 if [[ ! -e $ZPLUGINDIR/zsh-completions ]]; then
   git clone --depth=1 https://github.com/zsh-users/zsh-completions.git "$ZPLUGINDIR"/zsh-completions
@@ -48,6 +50,7 @@ source $ZPLUGINDIR/ohmyzsh/plugins/gpg-agent/gpg-agent.plugin.zsh
 source $ZPLUGINDIR/ohmyzsh/plugins/ssh-agent/ssh-agent.plugin.zsh
 source $ZPLUGINDIR/ohmyzsh/plugins/zsh-interactive-cd/zsh-interactive-cd.plugin.zsh
 source $ZPLUGINDIR/ohmyzsh/lib/completion.zsh
+source $ZPLUGINDIR/ohmyzsh/lib/functions.zsh
 source $ZPLUGINDIR/ohmyzsh/lib/termsupport.zsh
 source $ZPLUGINDIR/zsh-completions/zsh-completions.plugin.zsh
 source $ZPLUGINDIR/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
