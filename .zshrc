@@ -48,6 +48,7 @@ source $ZPLUGINDIR/ohmyzsh/plugins/gpg-agent/gpg-agent.plugin.zsh
 source $ZPLUGINDIR/ohmyzsh/plugins/ssh-agent/ssh-agent.plugin.zsh
 source $ZPLUGINDIR/ohmyzsh/plugins/zsh-interactive-cd/zsh-interactive-cd.plugin.zsh
 source $ZPLUGINDIR/ohmyzsh/lib/completion.zsh
+source $ZPLUGINDIR/ohmyzsh/lib/termsupport.zsh
 source $ZPLUGINDIR/zsh-completions/zsh-completions.plugin.zsh
 source $ZPLUGINDIR/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 source $ZPLUGINDIR/zsh-autosuggestions/zsh-autosuggestions.zsh
