@@ -4,6 +4,14 @@ eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv zsh)"
 export ZPLUGINDIR="$HOME/.local/share/zsh_plugins"
 mkdir -p "$ZPLUGINDIR"
 
+declare -A zsh_plugins=(
+  [ohmyzsh]="https://github.com/ohmyzsh/ohmyzsh.git"
+  [zsh-completions]="https://github.com/zsh-users/zsh-completions.git"
+  [zsh-syntax-highlighting]="https://github.com/zsh-users/zsh-syntax-highlighting.git"
+  [zsh-autosuggestions]="https://github.com/zsh-users/zsh-autosuggestions.git"
+  [powerlevel10k]="https://github.com/romkatv/powerlevel10k.git"
+)
+
 # PLUGINS
 function zcompile-many() {
   local f
@@ -24,7 +32,7 @@ if [[ ! -e $ZPLUGINDIR/zsh-completions ]]; then
 fi
 if [[ ! -e $ZPLUGINDIR/zsh-syntax-highlighting ]]; then
   git clone --depth=1 https://github.com/zsh-users/zsh-syntax-highlighting.git "$ZPLUGINDIR"/zsh-syntax-highlighting
-  zcompile-many "$ZPLUGINDIR"/zsh-syntax-highlighting/{zsh-syntax-highlighting.zsh,highlighters/*/*.zsh}
+  zcompile-many "$ZPLUGINDIR"/zsh-syntax-highlighting/{zsh-syntax-highlighting.zsh,highlighters/**/*.zsh}
 fi
 if [[ ! -e $ZPLUGINDIR/zsh-autosuggestions ]]; then
   git clone --depth=1 https://github.com/zsh-users/zsh-autosuggestions.git $ZPLUGINDIR/zsh-autosuggestions
@@ -46,12 +54,12 @@ autoload -Uz compinit && compinit
 [[ $ZDOTDIR/.zcompdump.zwc -nt $ZDOTDIR/.zcompdump ]] || zcompile-many $ZDOTDIR/.zcompdump
 
 # Load plugins.
-source $ZPLUGINDIR/ohmyzsh/plugins/gpg-agent/gpg-agent.plugin.zsh
-source $ZPLUGINDIR/ohmyzsh/plugins/ssh-agent/ssh-agent.plugin.zsh
-source $ZPLUGINDIR/ohmyzsh/plugins/zsh-interactive-cd/zsh-interactive-cd.plugin.zsh
 source $ZPLUGINDIR/ohmyzsh/lib/completion.zsh
 source $ZPLUGINDIR/ohmyzsh/lib/functions.zsh
 source $ZPLUGINDIR/ohmyzsh/lib/termsupport.zsh
+source $ZPLUGINDIR/ohmyzsh/plugins/gpg-agent/gpg-agent.plugin.zsh
+source $ZPLUGINDIR/ohmyzsh/plugins/ssh-agent/ssh-agent.plugin.zsh
+source $ZPLUGINDIR/ohmyzsh/plugins/zsh-interactive-cd/zsh-interactive-cd.plugin.zsh
 source $ZPLUGINDIR/zsh-completions/zsh-completions.plugin.zsh
 source $ZPLUGINDIR/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 source $ZPLUGINDIR/zsh-autosuggestions/zsh-autosuggestions.zsh
@@ -78,10 +86,11 @@ export CARGO_HOME=$HOME/.local/share/cargo
 export RUSTUP_HOME=$HOME/.local/share/rustup
 export TASKDATA=$HOME/.config/task
 export TASKRC=$TASKDATA/taskrc
-export VOLTA_HOME=$HOME/.config/volta
+export VOLTA_HOME=$HOME/.local/share/volta
 export PYENV_ROOT=$HOME/.local/share/pyenv
+export TENV_ROOT=$HOME/.local/share/tenv
 export BITWARDENCLI_APPDATA_DIR=$HOME/.config/bw
-export PATH=$PATH:$ZDOTDIR/scripts:$HOME/.local/bin:$CARGO_HOME/bin:$HOME/.local/share/rustup/bin:$VOLTA_HOME/bin:$PYENV_ROOT/shims:/home/linuxbrew/.linuxbrew/opt/pyenv/bin
+export PATH=$VOLTA_HOME/bin:$PATH:$ZDOTDIR/scripts:$HOME/.local/bin:$CARGO_HOME/bin:$HOME/.local/share/rustup/bin:$PYENV_ROOT/shims:/home/linuxbrew/.linuxbrew/opt/pyenv/bin
 
 # EVAL
 source <(fzf --zsh)
