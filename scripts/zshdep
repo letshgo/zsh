@@ -3,15 +3,18 @@ set -euo pipefail
 # DEPENDENCIES
 ## COMMON
 ZSHDEP_COMMON=(
-  autoconf automake gawk
+  autoconf automake
   bc
   ca-certificates calc cmake curl
   dnsutils
   expect
+  gawk
   htop
   kitty-terminfo
   lsb-release
+  nodejs
   patch p7zip perl python3 python3-neovim python3-pip
+  ruby
   strace sudo-rs systemd-container
   tcpdump
   util-linux

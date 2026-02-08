@@ -1,8 +1,14 @@
 # BREW
 eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv zsh)"
 
-export ZPLUGINDIR="$HOME/.local/share/zsh_plugins"
-mkdir -p "$ZPLUGINDIR"
+export ASDF_DATA_DIR="$HOME/.local/share/asdf"
+export PATH="${ASDF_DATA_DIR:-$HOME/.asdf}/shims:$PATH"
+export ZSH_COMP_DIR="$HOME/.local/share/zsh/completions"
+export ZSH_CACHE_DIR="$HOME/.local/share/zsh/cache"
+export ZSH_PLUGIN_DIR="$HOME/.local/share/zsh/plugins"
+mkdir -p "$ZSH_PLUGIN_DIR"
+mkdir -p "$ZSH_CACHE_DIR"
+mkdir -p "$ZSH_COMP_DIR"
 
 declare -A zsh_plugins=(
   [ohmyzsh]="https://github.com/ohmyzsh/ohmyzsh.git"
@@ -17,30 +23,30 @@ function zcompile-many() {
   local f
   for f; do zcompile -R -- "$f".zwc "$f"; done
 }
-if [[ ! -e $ZPLUGINDIR/ohmyzsh ]]; then
-  git clone --depth=1 https://github.com/ohmyzsh/ohmyzsh.git "$ZPLUGINDIR"/ohmyzsh
-  zcompile-many "$ZPLUGINDIR"/ohmyzsh/plugins/gpg-agent/gpg-agent.plugin.zsh
-  zcompile-many "$ZPLUGINDIR"/ohmyzsh/plugins/ssh-agent/ssh-agent.plugin.zsh
-  zcompile-many "$ZPLUGINDIR"/ohmyzsh/plugins/zsh-interactive-cd/zsh-interactive-cd.plugin.zsh
-  zcompile-many "$ZPLUGINDIR"/ohmyzsh/lib/completion.zsh
-  zcompile-many "$ZPLUGINDIR"/ohmyzsh/lib/functions.zsh
-  zcompile-many "$ZPLUGINDIR"/ohmyzsh/lib/termsupport.zsh
+if [[ ! -e $ZSH_PLUGIN_DIR/ohmyzsh ]]; then
+  git clone --depth=1 https://github.com/ohmyzsh/ohmyzsh.git "$ZSH_PLUGIN_DIR"/ohmyzsh
+  zcompile-many "$ZSH_PLUGIN_DIR"/ohmyzsh/plugins/gpg-agent/gpg-agent.plugin.zsh
+  zcompile-many "$ZSH_PLUGIN_DIR"/ohmyzsh/plugins/ssh-agent/ssh-agent.plugin.zsh
+  zcompile-many "$ZSH_PLUGIN_DIR"/ohmyzsh/plugins/zsh-interactive-cd/zsh-interactive-cd.plugin.zsh
+  zcompile-many "$ZSH_PLUGIN_DIR"/ohmyzsh/lib/completion.zsh
+  zcompile-many "$ZSH_PLUGIN_DIR"/ohmyzsh/lib/functions.zsh
+  zcompile-many "$ZSH_PLUGIN_DIR"/ohmyzsh/lib/termsupport.zsh
 fi
-if [[ ! -e $ZPLUGINDIR/zsh-completions ]]; then
-  git clone --depth=1 https://github.com/zsh-users/zsh-completions.git "$ZPLUGINDIR"/zsh-completions
-  zcompile-many "$ZPLUGINDIR"/zsh-completions/{zsh-completions.plugin.zsh}
+if [[ ! -e $ZSH_PLUGIN_DIR/zsh-completions ]]; then
+  git clone --depth=1 https://github.com/zsh-users/zsh-completions.git "$ZSH_PLUGIN_DIR"/zsh-completions
+  zcompile-many "$ZSH_PLUGIN_DIR"/zsh-completions/{zsh-completions.plugin.zsh}
 fi
-if [[ ! -e $ZPLUGINDIR/zsh-syntax-highlighting ]]; then
-  git clone --depth=1 https://github.com/zsh-users/zsh-syntax-highlighting.git "$ZPLUGINDIR"/zsh-syntax-highlighting
-  zcompile-many "$ZPLUGINDIR"/zsh-syntax-highlighting/{zsh-syntax-highlighting.zsh,highlighters/**/*.zsh}
+if [[ ! -e $ZSH_PLUGIN_DIR/zsh-syntax-highlighting ]]; then
+  git clone --depth=1 https://github.com/zsh-users/zsh-syntax-highlighting.git "$ZSH_PLUGIN_DIR"/zsh-syntax-highlighting
+  zcompile-many "$ZSH_PLUGIN_DIR"/zsh-syntax-highlighting/{zsh-syntax-highlighting.zsh,highlighters/**/*.zsh}
 fi
-if [[ ! -e $ZPLUGINDIR/zsh-autosuggestions ]]; then
-  git clone --depth=1 https://github.com/zsh-users/zsh-autosuggestions.git $ZPLUGINDIR/zsh-autosuggestions
-  zcompile-many $ZPLUGINDIR/zsh-autosuggestions/{zsh-autosuggestions.zsh,src/**/*.zsh}
+if [[ ! -e $ZSH_PLUGIN_DIR/zsh-autosuggestions ]]; then
+  git clone --depth=1 https://github.com/zsh-users/zsh-autosuggestions.git $ZSH_PLUGIN_DIR/zsh-autosuggestions
+  zcompile-many $ZSH_PLUGIN_DIR/zsh-autosuggestions/{zsh-autosuggestions.zsh,src/**/*.zsh}
 fi
-if [[ ! -e $ZPLUGINDIR/powerlevel10k ]]; then
-  git clone --depth=1 https://github.com/romkatv/powerlevel10k.git $ZPLUGINDIR/powerlevel10k
-  make -C $ZPLUGINDIR/powerlevel10k pkg
+if [[ ! -e $ZSH_PLUGIN_DIR/powerlevel10k ]]; then
+  git clone --depth=1 https://github.com/romkatv/powerlevel10k.git $ZSH_PLUGIN_DIR/powerlevel10k
+  make -C $ZSH_PLUGIN_DIR/powerlevel10k pkg
 fi
 
 ZSH_AUTOSUGGEST_MANUAL_REBIND=1
@@ -50,20 +56,23 @@ if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
+fpath=($ZSH_COMP_DIR $fpath)
+
+# initialise completions with ZSH's compinit
 autoload -Uz compinit && compinit
 [[ $ZDOTDIR/.zcompdump.zwc -nt $ZDOTDIR/.zcompdump ]] || zcompile-many $ZDOTDIR/.zcompdump
 
 # Load plugins.
-source $ZPLUGINDIR/ohmyzsh/lib/completion.zsh
-source $ZPLUGINDIR/ohmyzsh/lib/functions.zsh
-source $ZPLUGINDIR/ohmyzsh/lib/termsupport.zsh
-source $ZPLUGINDIR/ohmyzsh/plugins/gpg-agent/gpg-agent.plugin.zsh
-source $ZPLUGINDIR/ohmyzsh/plugins/ssh-agent/ssh-agent.plugin.zsh
-source $ZPLUGINDIR/ohmyzsh/plugins/zsh-interactive-cd/zsh-interactive-cd.plugin.zsh
-source $ZPLUGINDIR/zsh-completions/zsh-completions.plugin.zsh
-source $ZPLUGINDIR/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-source $ZPLUGINDIR/zsh-autosuggestions/zsh-autosuggestions.zsh
-source $ZPLUGINDIR/powerlevel10k/powerlevel10k.zsh-theme
+source $ZSH_PLUGIN_DIR/ohmyzsh/lib/completion.zsh
+source $ZSH_PLUGIN_DIR/ohmyzsh/lib/functions.zsh
+source $ZSH_PLUGIN_DIR/ohmyzsh/lib/termsupport.zsh
+source $ZSH_PLUGIN_DIR/ohmyzsh/plugins/gpg-agent/gpg-agent.plugin.zsh
+source $ZSH_PLUGIN_DIR/ohmyzsh/plugins/ssh-agent/ssh-agent.plugin.zsh
+source $ZSH_PLUGIN_DIR/ohmyzsh/plugins/zsh-interactive-cd/zsh-interactive-cd.plugin.zsh
+source $ZSH_PLUGIN_DIR/zsh-completions/zsh-completions.plugin.zsh
+source $ZSH_PLUGIN_DIR/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+source $ZSH_PLUGIN_DIR/zsh-autosuggestions/zsh-autosuggestions.zsh
+source $ZSH_PLUGIN_DIR/powerlevel10k/powerlevel10k.zsh-theme
 source $ZDOTDIR/.p10k.zsh
 
 unfunction zcompile-many
@@ -82,38 +91,14 @@ export PAGER=most
 export FZF_DEFAULT_OPTS="--layout=reverse --inline-info"
 export FZF_DEFAULT_COMMAND='fd --type f'
 export FZF_CTRL_T_OPTS="--preview 'bat -n --color=always {}'"
-export CARGO_HOME=$HOME/.local/share/cargo
-export RUSTUP_HOME=$HOME/.local/share/rustup
 export TASKDATA=$HOME/.config/task
 export TASKRC=$TASKDATA/taskrc
-export VOLTA_HOME=$HOME/.local/share/volta
-export PYENV_ROOT=$HOME/.local/share/pyenv
-export TENV_ROOT=$HOME/.local/share/tenv
 export BITWARDENCLI_APPDATA_DIR=$HOME/.config/bw
-export PATH=$VOLTA_HOME/bin:$PATH:$ZDOTDIR/scripts:$HOME/.local/bin:$CARGO_HOME/bin:$HOME/.local/share/rustup/bin:$PYENV_ROOT/shims:/home/linuxbrew/.linuxbrew/opt/pyenv/bin
+export PATH=$PATH:$ZDOTDIR/scripts:$HOME/.local/bin
 
 # EVAL
 source <(fzf --zsh)
-eval "$(pyenv init - --no-rehash zsh)"
-__vew_init() {
-	pyenv virtualenvwrapper
-}
-mkvirtualenv() {
-	__vew_init
-	mkvirtualenv "$@"
-}
-workon() {
-	__vew_init
-	workon "$@"
-}
-mktmpenv() {
-	__vew_init
-	mktmpenv "$@"
-}
-rmvirtualenv() {
-	__vew_init
-	rmvirtualenv "$@"
-}
+eval "$(zoxide init zsh)"
 
 # ALIAS
 alias l='eza -lhgbF --git --time-style=iso --group-directories-first --icons=always'
