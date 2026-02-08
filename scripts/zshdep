@@ -53,19 +53,19 @@ yay_install() {
 debian_install() {
   sudo apt install "${ZSHDEP_COMMON[@]}"
   sudo apt install "${ZSHDEP_DEBIAN[@]}"
-  brew_install "${1:-}"
+  brew_install
 }
 ## FEDORA
 fedora_install() {
   sudo dnf install "${ZSHDEP_COMMON[@]}"
   sudo dnf install "${ZSHDEP_FEDORA[@]}"
-  brew_install "${1:-}"
+  brew_install
 }
 ## ARCH
 arch_install() {
   sudo pacman -Syy "${ZSHDEP_COMMON[@]}"
   sudo pacman -Syy "${ZSHDEP_ARCH[@]}"
-  brew_install "${1:-}"
+  brew_install
   yay_install
 }
 flow() {
