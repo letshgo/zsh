@@ -1,10 +1,8 @@
 #!/usr/bin/env zsh
 BREW_PKGS=(
-  aerc
-  az
+  aerc asdf az
   bat bitwarden-cli btop
-  cowsay
-  dotnet
+  cmatrix cowsay
   eza
   fd figlet fzf
   git-crypt golang
@@ -13,13 +11,11 @@ BREW_PKGS=(
   lazygit lolcat
   most
   neovim newsboat nmap
-  pyenv pyenv-virtualenv
-  rustup
   skopeo
-  tenv tmux tmuxp trivy
-  volta weechat wego
+  tmux tmuxp trivy
+  weechat wego
   yq
-  zig zoxide
+  zoxide
 )
 if [[ ! ${1:-} == "update" ]]; then
   brew install $BREW_PKGS[@]

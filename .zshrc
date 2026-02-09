@@ -2,7 +2,7 @@
 eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv zsh)"
 
 export ASDF_DATA_DIR="$HOME/.local/share/asdf"
-export PATH="${ASDF_DATA_DIR:-$HOME/.asdf}/shims:$PATH"
+export PATH="$ASDF_DATA_DIR/shims:$PATH"
 export ZSH_COMP_DIR="$HOME/.local/share/zsh/completions"
 export ZSH_CACHE_DIR="$HOME/.local/share/zsh/cache"
 export ZSH_PLUGIN_DIR="$HOME/.local/share/zsh/plugins"
@@ -28,8 +28,10 @@ if [[ ! -e $ZSH_PLUGIN_DIR/ohmyzsh ]]; then
   zcompile-many "$ZSH_PLUGIN_DIR"/ohmyzsh/plugins/gpg-agent/gpg-agent.plugin.zsh
   zcompile-many "$ZSH_PLUGIN_DIR"/ohmyzsh/plugins/ssh-agent/ssh-agent.plugin.zsh
   zcompile-many "$ZSH_PLUGIN_DIR"/ohmyzsh/plugins/zsh-interactive-cd/zsh-interactive-cd.plugin.zsh
+  zcompile-many "$ZSH_PLUGIN_DIR"/ohmyzsh/lib/clipboard.zsh
   zcompile-many "$ZSH_PLUGIN_DIR"/ohmyzsh/lib/completion.zsh
   zcompile-many "$ZSH_PLUGIN_DIR"/ohmyzsh/lib/functions.zsh
+  zcompile-many "$ZSH_PLUGIN_DIR"/ohmyzsh/lib/git.zsh
   zcompile-many "$ZSH_PLUGIN_DIR"/ohmyzsh/lib/termsupport.zsh
 fi
 if [[ ! -e $ZSH_PLUGIN_DIR/zsh-completions ]]; then
@@ -63,8 +65,11 @@ autoload -Uz compinit && compinit
 [[ $ZDOTDIR/.zcompdump.zwc -nt $ZDOTDIR/.zcompdump ]] || zcompile-many $ZDOTDIR/.zcompdump
 
 # Load plugins.
+source $ZSH_PLUGIN_DIR/ohmyzsh/lib/clipboard.zsh
 source $ZSH_PLUGIN_DIR/ohmyzsh/lib/completion.zsh
 source $ZSH_PLUGIN_DIR/ohmyzsh/lib/functions.zsh
+source $ZSH_PLUGIN_DIR/ohmyzsh/lib/git.zsh
+source $ZSH_PLUGIN_DIR/ohmyzsh/lib/key-bindings.zsh
 source $ZSH_PLUGIN_DIR/ohmyzsh/lib/termsupport.zsh
 source $ZSH_PLUGIN_DIR/ohmyzsh/plugins/gpg-agent/gpg-agent.plugin.zsh
 source $ZSH_PLUGIN_DIR/ohmyzsh/plugins/ssh-agent/ssh-agent.plugin.zsh
@@ -128,6 +133,7 @@ alias rsync-copy="rsync -avz --progress -h"
 alias rsync-move="rsync -avz --progress -h --remove-source-files"
 alias rsync-update="rsync -avzu --progress -h"
 alias rsync-synchronize="rsync -avzu --delete --progress -h"
+bindkey -s "^l" 'cmatrix\n'
 
 # To customize prompt, run `p10k configure` or edit ~/.config/zsh/.p10k.zsh.
 [[ ! -f ~/.config/zsh/.p10k.zsh ]] || source ~/.config/zsh/.p10k.zsh
